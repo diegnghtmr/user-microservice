@@ -40,6 +40,9 @@ public class UserEntity {
     @Column(nullable = false, length = 20)
     private String phone;
 
+    @Column(nullable = false)
+    private java.time.LocalDate birthDate;
+
     @Column(nullable = false, length = 60)
     private String password;
 

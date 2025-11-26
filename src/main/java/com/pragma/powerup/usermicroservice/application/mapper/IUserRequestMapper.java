@@ -9,5 +9,6 @@ import org.mapstruct.Mapping;
 public interface IUserRequestMapper {
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "role", ignore = true)
     User toModel(UserRequestDto userRequestDto);
 }

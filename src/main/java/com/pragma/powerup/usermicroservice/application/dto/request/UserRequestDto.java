@@ -2,46 +2,41 @@ package com.pragma.powerup.usermicroservice.application.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import java.time.LocalDate;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class UserRequestDto {
 
     @NotBlank
-    @Size(max = 100)
     private String firstName;
 
     @NotBlank
-    @Size(max = 100)
     private String lastName;
 
     @NotBlank
-    @Email
-    @Size(max = 150)
-    private String email;
-
-    @NotBlank
-    @Size(max = 20)
+    @Pattern(regexp = "\\d+", message = "Document number must be numeric")
     private String documentNumber;
 
     @NotBlank
-    @Size(max = 20)
+    @Size(max = 13)
+    @Pattern(regexp = "^\\+?\\d+$", message = "Phone number must be numeric and can contain +")
     private String phone;
 
-    @NotBlank
-    @Size(min = 8, max = 60)
-    private String password;
+    @NotNull
+    @Past
+    private LocalDate birthDate;
 
     @NotBlank
-    @Size(max = 50)
-    private String role;
+    @Email
+    private String email;
+
+    @NotBlank
+    private String password;
 }
