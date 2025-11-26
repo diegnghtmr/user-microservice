@@ -17,13 +17,13 @@ public class UserJpaAdapter implements IUserPersistencePort {
     private final IUserEntityMapper userEntityMapper;
 
     @Override
-    public User save(User user) {
+    public User saveUser(User user) {
         return userEntityMapper.toModel(userRepository.save(userEntityMapper.toEntity(user)));
     }
 
     @Override
-    public Optional<User> findByEmail(String email) {
-        return userRepository.findByEmail(email).map(userEntityMapper::toModel);
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email).map(userEntityMapper::toModel).orElse(null);
     }
 
     @Override

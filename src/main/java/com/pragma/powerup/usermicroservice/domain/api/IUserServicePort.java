@@ -4,7 +4,7 @@ import com.pragma.powerup.usermicroservice.domain.model.User;
 import java.util.List;
 
 public interface IUserServicePort {
-    User createUser(User user);
+    User saveUser(User user);
 
     User getUserById(Long id);
 

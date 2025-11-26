@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/users")
+@RequestMapping("/user")
 @Tag(name = "Users", description = "User management endpoints")
 @RequiredArgsConstructor
 public class UserRestController {
@@ -27,16 +27,16 @@ public class UserRestController {
     private final IUserHandler userHandler;
 
     @Operation(
-        summary = "Create a new user",
+        summary = "Create a new owner",
         responses = {
-            @ApiResponse(responseCode = "201", description = "User created"),
+            @ApiResponse(responseCode = "201", description = "Owner created"),
             @ApiResponse(responseCode = "400", description = "Invalid payload"),
             @ApiResponse(responseCode = "409", description = "User already exists")
         }
     )
-    @PostMapping
-    public ResponseEntity<UserResponseDto> createUser(@Valid @RequestBody UserRequestDto userRequestDto) {
-        UserResponseDto responseDto = userHandler.createUser(userRequestDto);
+    @PostMapping("/owner")
+    public ResponseEntity<UserResponseDto> saveOwner(@Valid @RequestBody UserRequestDto userRequestDto) {
+        UserResponseDto responseDto = userHandler.saveUser(userRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 

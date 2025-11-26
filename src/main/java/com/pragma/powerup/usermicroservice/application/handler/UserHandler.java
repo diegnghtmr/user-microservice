@@ -19,9 +19,9 @@ public class UserHandler implements IUserHandler {
     private final IUserResponseMapper userResponseMapper;
 
     @Override
-    public UserResponseDto createUser(UserRequestDto userRequestDto) {
+    public UserResponseDto saveUser(UserRequestDto userRequestDto) {
         User user = userRequestMapper.toModel(userRequestDto);
-        User createdUser = userServicePort.createUser(user);
+        User createdUser = userServicePort.saveUser(user);
         return userResponseMapper.toResponse(createdUser);
     }
 

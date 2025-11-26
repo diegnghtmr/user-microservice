@@ -7,19 +7,21 @@ public class User {
     private String email;
     private String documentNumber;
     private String phone;
+    private java.time.LocalDate birthDate;
     private String password;
     private String role;
 
     public User() {
     }
 
-    public User(Long id, String firstName, String lastName, String email, String documentNumber, String phone, String password, String role) {
+    public User(Long id, String firstName, String lastName, String email, String documentNumber, String phone, java.time.LocalDate birthDate, String password, String role) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.documentNumber = documentNumber;
         this.phone = phone;
+        this.birthDate = birthDate;
         this.password = password;
         this.role = role;
     }
@@ -70,6 +72,14 @@ public class User {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public java.time.LocalDate getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(java.time.LocalDate birthDate) {
+        this.birthDate = birthDate;
     }
 
     public String getPassword() {

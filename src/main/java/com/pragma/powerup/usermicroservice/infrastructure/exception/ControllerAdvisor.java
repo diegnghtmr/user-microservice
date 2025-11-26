@@ -65,6 +65,17 @@ public class ControllerAdvisor {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
     }
 
+    @ExceptionHandler(com.pragma.powerup.usermicroservice.domain.exception.UserMustBeAdultException.class)
+    public ResponseEntity<ApiError> handleUserMustBeAdult(com.pragma.powerup.usermicroservice.domain.exception.UserMustBeAdultException exception) {
+        ApiError apiError = ApiError.builder()
+            .status(HttpStatus.BAD_REQUEST.value())
+            .message("User must be an adult")
+            .errors(Collections.emptyList())
+            .build();
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleGenericException(Exception exception) {
         ApiError apiError = ApiError.builder()

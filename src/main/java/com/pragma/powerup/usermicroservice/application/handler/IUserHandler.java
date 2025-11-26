@@ -5,7 +5,7 @@ import com.pragma.powerup.usermicroservice.application.dto.response.UserResponse
 import java.util.List;
 
 public interface IUserHandler {
-    UserResponseDto createUser(UserRequestDto userRequestDto);
+    UserResponseDto saveUser(UserRequestDto userRequestDto);
 
     UserResponseDto getUser(Long id);
 

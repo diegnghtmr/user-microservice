@@ -1,22 +1,18 @@
 package com.pragma.powerup.usermicroservice.application.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import java.time.LocalDate;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class UserResponseDto {
     private Long id;
     private String firstName;
     private String lastName;
-    private String email;
     private String documentNumber;
     private String phone;
+    private LocalDate birthDate;
+    private String email;
     private String role;
 }
