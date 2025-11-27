@@ -76,6 +76,17 @@ public class ControllerAdvisor {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
     }
 
+    @ExceptionHandler(com.pragma.powerup.usermicroservice.domain.exception.AuthenticationFailedException.class)
+    public ResponseEntity<ApiError> handleAuthenticationFailed(com.pragma.powerup.usermicroservice.domain.exception.AuthenticationFailedException exception) {
+        ApiError apiError = ApiError.builder()
+            .status(HttpStatus.UNAUTHORIZED.value())
+            .message("Authentication failed")
+            .errors(Collections.emptyList())
+            .build();
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(apiError);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleGenericException(Exception exception) {
         ApiError apiError = ApiError.builder()
