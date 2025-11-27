@@ -39,4 +39,6 @@ public class UserRequestDto {
 
     @NotBlank
     private String password;
+
+    private Long idRestaurant;
 }

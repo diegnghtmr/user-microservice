@@ -10,11 +10,12 @@ public class User {
     private java.time.LocalDate birthDate;
     private String password;
     private String role;
+    private Long idRestaurant;
 
     public User() {
     }
 
-    public User(Long id, String firstName, String lastName, String email, String documentNumber, String phone, java.time.LocalDate birthDate, String password, String role) {
+    public User(Long id, String firstName, String lastName, String email, String documentNumber, String phone, java.time.LocalDate birthDate, String password, String role, Long idRestaurant) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -24,6 +25,7 @@ public class User {
         this.birthDate = birthDate;
         this.password = password;
         this.role = role;
+        this.idRestaurant = idRestaurant;
     }
 
     public Long getId() {
@@ -96,5 +98,13 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public Long getIdRestaurant() {
+        return idRestaurant;
+    }
+
+    public void setIdRestaurant(Long idRestaurant) {
+        this.idRestaurant = idRestaurant;
     }
 }
