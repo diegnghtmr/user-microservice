@@ -7,6 +7,8 @@ public interface IUserServicePort {
     User saveUser(User user);
     
     User saveEmployee(User user);
+    
+    User saveClient(User user);
 
     User getUserById(Long id);
 

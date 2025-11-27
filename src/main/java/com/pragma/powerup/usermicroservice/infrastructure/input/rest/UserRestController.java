@@ -58,6 +58,21 @@ public class UserRestController {
     }
 
     @Operation(
+        summary = "Register a new client",
+        description = "Public endpoint for new clients to register.",
+        responses = {
+            @ApiResponse(responseCode = "201", description = "Client created"),
+            @ApiResponse(responseCode = "400", description = "Invalid payload"),
+            @ApiResponse(responseCode = "409", description = "User already exists")
+        }
+    )
+    @PostMapping("/client")
+    public ResponseEntity<UserResponseDto> saveClient(@Valid @RequestBody UserRequestDto userRequestDto) {
+        UserResponseDto responseDto = userHandler.saveClient(userRequestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
+    }
+
+    @Operation(
         summary = "Get a user by id",
         responses = {
             @ApiResponse(responseCode = "200", description = "User found"),
