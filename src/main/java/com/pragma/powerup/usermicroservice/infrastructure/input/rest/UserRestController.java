@@ -41,6 +41,23 @@ public class UserRestController {
     }
 
     @Operation(
+        summary = "Create a new employee",
+        description = "Only users with role OWNER can create employees.",
+        responses = {
+            @ApiResponse(responseCode = "201", description = "Employee created"),
+            @ApiResponse(responseCode = "400", description = "Invalid payload"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "409", description = "User already exists")
+        }
+    )
+    @io.swagger.v3.oas.annotations.security.SecurityRequirement(name = "bearerAuth")
+    @PostMapping("/employee")
+    public ResponseEntity<UserResponseDto> saveEmployee(@Valid @RequestBody UserRequestDto userRequestDto) {
+        UserResponseDto responseDto = userHandler.saveEmployee(userRequestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
+    }
+
+    @Operation(
         summary = "Get a user by id",
         responses = {
             @ApiResponse(responseCode = "200", description = "User found"),

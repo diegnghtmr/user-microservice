@@ -31,8 +31,13 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public ITokenProviderPort tokenProviderPort() {
+    public JwtProviderAdapter jwtProviderAdapter() {
         return new JwtProviderAdapter();
+    }
+
+    @Bean
+    public ITokenProviderPort tokenProviderPort(JwtProviderAdapter jwtProviderAdapter) {
+        return jwtProviderAdapter;
     }
 
     @Bean
