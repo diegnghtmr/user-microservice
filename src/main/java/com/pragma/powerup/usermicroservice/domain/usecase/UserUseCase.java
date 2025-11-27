@@ -37,6 +37,22 @@ public class UserUseCase implements IUserServicePort {
     }
 
     @Override
+    public User saveEmployee(User user) {
+        if (user.getBirthDate() == null || Period.between(user.getBirthDate(), LocalDate.now()).getYears() < 18) {
+            throw new UserMustBeAdultException();
+        }
+
+        if (userPersistencePort.getUserByEmail(user.getEmail()) != null) {
+            throw new UserAlreadyExistsException("User already exists with email " + user.getEmail());
+        }
+
+        user.setRole("ROLE_EMPLOYEE");
+        user.setPassword(passwordEncoderPort.encode(user.getPassword()));
+
+        return userPersistencePort.saveUser(user);
+    }
+
+    @Override
     public User getUserById(Long id) {
         return userPersistencePort.findById(id)
             .orElseThrow(() -> new UserNotFoundException("User not found with id " + id));

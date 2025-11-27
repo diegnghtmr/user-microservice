@@ -2,6 +2,8 @@ package com.pragma.powerup.usermicroservice.infrastructure.security;
 
 import com.pragma.powerup.usermicroservice.domain.model.User;
 import com.pragma.powerup.usermicroservice.domain.spi.ITokenProviderPort;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import java.util.Collections;
@@ -30,5 +32,31 @@ public class JwtProviderAdapter implements ITokenProviderPort {
                 .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(key)
                 .compact();
+    }
+
+    public Claims getClaims(String token) {
+        SecretKey key = Keys.hmacShaKeyFor(SECRET.getBytes());
+        return Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+    }
+
+    public String getUsername(String token) {
+        return getClaims(token).getSubject();
+    }
+
+    public List<String> getRoles(String token) {
+        return getClaims(token).get("roles", List.class);
+    }
+
+    public boolean validateToken(String token) {
+        try {
+            getClaims(token);
+            return true;
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
+        }
     }
 }
