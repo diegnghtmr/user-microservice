@@ -24,12 +24,18 @@ public class JwtProviderAdapter implements ITokenProviderPort {
         
         List<String> roles = Collections.singletonList(user.getRole());
 
-        return Jwts.builder()
+        var builder = Jwts.builder()
                 .subject(user.getEmail())
                 .claim("roles", roles)
                 .claim("id", user.getId())
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME));
+
+        if (user.getIdRestaurant() != null) {
+            builder.claim("restaurantId", user.getIdRestaurant());
+        }
+
+        return builder
                 .signWith(key)
                 .compact();
     }
