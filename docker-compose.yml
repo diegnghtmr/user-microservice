@@ -1,0 +1,43 @@
+services:
+  user-postgres:
+    image: postgres:latest
+    container_name: user-postgres
+    environment:
+      POSTGRES_DB: user_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5431:5432"
+    volumes:
+      - user_postgres_data:/var/lib/postgresql
+    networks:
+      - user-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  user-microservice:
+    build: .
+    container_name: user-microservice
+    ports:
+      - "8090:8090"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://user-postgres:5432/user_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    depends_on:
+      user-postgres:
+        condition: service_healthy
+    networks:
+      - user-network
+    restart: on-failure
+
+networks:
+  user-network:
+    driver: bridge
+
+volumes:
+  user_postgres_data:
