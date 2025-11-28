@@ -111,7 +111,8 @@ class UserUseCaseTest {
             "+123456789",
             LocalDate.now().minusYears(20),
             "SecretPwd1!",
-            "ADMIN"
+            "ADMIN",
+            null
         );
     }
 }
