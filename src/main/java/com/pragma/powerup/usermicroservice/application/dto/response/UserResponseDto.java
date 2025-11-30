@@ -15,4 +15,5 @@ public class UserResponseDto {
     private LocalDate birthDate;
     private String email;
     private String role;
+    private Long idRestaurant;
 }

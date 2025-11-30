@@ -69,6 +69,22 @@ public class UserUseCase implements IUserServicePort {
     }
 
     @Override
+    public User saveAdmin(User user) {
+        if (user.getBirthDate() == null || Period.between(user.getBirthDate(), LocalDate.now()).getYears() < 18) {
+            throw new UserMustBeAdultException();
+        }
+
+        if (userPersistencePort.getUserByEmail(user.getEmail()) != null) {
+            throw new UserAlreadyExistsException("User already exists with email " + user.getEmail());
+        }
+
+        user.setRole("ROLE_ADMIN");
+        user.setPassword(passwordEncoderPort.encode(user.getPassword()));
+
+        return userPersistencePort.saveUser(user);
+    }
+
+    @Override
     public User getUserById(Long id) {
         return userPersistencePort.findById(id)
             .orElseThrow(() -> new UserNotFoundException("User not found with id " + id));
@@ -77,5 +93,23 @@ public class UserUseCase implements IUserServicePort {
     @Override
     public List<User> getAllUsers() {
         return userPersistencePort.findAll();
+    }
+
+    @Override
+    public List<User> getOwners() {
+        return userPersistencePort.findByRole("ROLE_OWNER");
+    }
+
+    @Override
+    public List<User> getEmployeesByRestaurant(Long restaurantId) {
+        if (restaurantId == null) {
+            throw new IllegalArgumentException("Restaurant id is required");
+        }
+        return userPersistencePort.findByRestaurantAndRole(restaurantId, "ROLE_EMPLOYEE");
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return userPersistencePort.existsById(id);
     }
 }

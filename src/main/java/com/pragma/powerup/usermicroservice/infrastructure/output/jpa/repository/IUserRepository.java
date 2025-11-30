@@ -6,4 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface IUserRepository extends JpaRepository<UserEntity, Long> {
     Optional<UserEntity> findByEmail(String email);
+
+    List<UserEntity> findByRoleIgnoreCase(String role);
+
+    List<UserEntity> findByIdRestaurantAndRoleIgnoreCase(Long idRestaurant, String role);
 }

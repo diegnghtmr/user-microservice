@@ -11,7 +11,15 @@ public interface IUserHandler {
     
     UserResponseDto saveClient(UserRequestDto userRequestDto);
 
+    UserResponseDto saveAdmin(UserRequestDto userRequestDto);
+
     UserResponseDto getUser(Long id);
 
     List<UserResponseDto> listUsers();
+
+    List<UserResponseDto> listOwners();
+
+    List<UserResponseDto> listEmployeesByRestaurant(Long restaurantId);
+
+    boolean userExists(Long id);
 }

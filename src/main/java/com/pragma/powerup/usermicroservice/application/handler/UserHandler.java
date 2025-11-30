@@ -40,6 +40,13 @@ public class UserHandler implements IUserHandler {
     }
 
     @Override
+    public UserResponseDto saveAdmin(UserRequestDto userRequestDto) {
+        User user = userRequestMapper.toModel(userRequestDto);
+        User createdUser = userServicePort.saveAdmin(user);
+        return userResponseMapper.toResponse(createdUser);
+    }
+
+    @Override
     public UserResponseDto getUser(Long id) {
         User user = userServicePort.getUserById(id);
         return userResponseMapper.toResponse(user);
@@ -48,5 +55,20 @@ public class UserHandler implements IUserHandler {
     @Override
     public List<UserResponseDto> listUsers() {
         return userResponseMapper.toResponseList(userServicePort.getAllUsers());
+    }
+
+    @Override
+    public List<UserResponseDto> listOwners() {
+        return userResponseMapper.toResponseList(userServicePort.getOwners());
+    }
+
+    @Override
+    public List<UserResponseDto> listEmployeesByRestaurant(Long restaurantId) {
+        return userResponseMapper.toResponseList(userServicePort.getEmployeesByRestaurant(restaurantId));
+    }
+
+    @Override
+    public boolean userExists(Long id) {
+        return userServicePort.existsById(id);
     }
 }

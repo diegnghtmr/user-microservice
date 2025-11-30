@@ -10,7 +10,15 @@ public interface IUserServicePort {
     
     User saveClient(User user);
 
+    User saveAdmin(User user);
+
     User getUserById(Long id);
 
     List<User> getAllUsers();
+
+    List<User> getOwners();
+
+    List<User> getEmployeesByRestaurant(Long restaurantId);
+
+    boolean existsById(Long id);
 }

@@ -35,4 +35,19 @@ public class UserJpaAdapter implements IUserPersistencePort {
     public List<User> findAll() {
         return userEntityMapper.toModelList(userRepository.findAll());
     }
+
+    @Override
+    public List<User> findByRole(String role) {
+        return userEntityMapper.toModelList(userRepository.findByRoleIgnoreCase(role));
+    }
+
+    @Override
+    public List<User> findByRestaurantAndRole(Long restaurantId, String role) {
+        return userEntityMapper.toModelList(userRepository.findByIdRestaurantAndRoleIgnoreCase(restaurantId, role));
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return userRepository.existsById(id);
+    }
 }

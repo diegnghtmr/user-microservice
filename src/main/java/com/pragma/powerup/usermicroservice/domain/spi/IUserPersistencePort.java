@@ -12,4 +12,10 @@ public interface IUserPersistencePort {
     Optional<User> findById(Long id);
 
     List<User> findAll();
+
+    List<User> findByRole(String role);
+
+    List<User> findByRestaurantAndRole(Long restaurantId, String role);
+
+    boolean existsById(Long id);
 }

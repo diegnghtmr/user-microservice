@@ -73,6 +73,21 @@ public class UserRestController {
     }
 
     @Operation(
+        summary = "Create a new admin",
+        description = "Utility endpoint to bootstrap an ADMIN user",
+        responses = {
+            @ApiResponse(responseCode = "201", description = "Admin created"),
+            @ApiResponse(responseCode = "400", description = "Invalid payload"),
+            @ApiResponse(responseCode = "409", description = "User already exists")
+        }
+    )
+    @PostMapping("/admin")
+    public ResponseEntity<UserResponseDto> saveAdmin(@Valid @RequestBody UserRequestDto userRequestDto) {
+        UserResponseDto responseDto = userHandler.saveAdmin(userRequestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
+    }
+
+    @Operation(
         summary = "Get a user by id",
         responses = {
             @ApiResponse(responseCode = "200", description = "User found"),
@@ -84,6 +99,12 @@ public class UserRestController {
         return ResponseEntity.ok(userHandler.getUser(id));
     }
 
+    @Operation(summary = "Check if a user exists by id")
+    @GetMapping("/{id}/exists")
+    public ResponseEntity<Boolean> userExists(@PathVariable Long id) {
+        return ResponseEntity.ok(userHandler.userExists(id));
+    }
+
     @Operation(
         summary = "List all users",
         responses = {
@@ -93,5 +114,17 @@ public class UserRestController {
     @GetMapping
     public ResponseEntity<List<UserResponseDto>> listUsers() {
         return ResponseEntity.ok(userHandler.listUsers());
+    }
+
+    @Operation(summary = "List all owners")
+    @GetMapping("/owners")
+    public ResponseEntity<List<UserResponseDto>> listOwners() {
+        return ResponseEntity.ok(userHandler.listOwners());
+    }
+
+    @Operation(summary = "List employees by restaurant")
+    @GetMapping("/employees/restaurant/{restaurantId}")
+    public ResponseEntity<List<UserResponseDto>> listEmployeesByRestaurant(@PathVariable Long restaurantId) {
+        return ResponseEntity.ok(userHandler.listEmployeesByRestaurant(restaurantId));
     }
 }
