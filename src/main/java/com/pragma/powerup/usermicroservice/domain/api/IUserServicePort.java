@@ -14,6 +14,8 @@ public interface IUserServicePort {
 
     User getUserById(Long id);
 
+    User getUserByEmail(String email);
+
     List<User> getAllUsers();
 
     List<User> getOwners();

@@ -15,6 +15,8 @@ public interface IUserHandler {
 
     UserResponseDto getUser(Long id);
 
+    UserResponseDto getUserByEmail(String email);
+
     List<UserResponseDto> listUsers();
 
     List<UserResponseDto> listOwners();

@@ -99,6 +99,18 @@ public class UserRestController {
         return ResponseEntity.ok(userHandler.getUser(id));
     }
 
+    @Operation(
+        summary = "Get a user by email",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "User found"),
+            @ApiResponse(responseCode = "404", description = "User not found")
+        }
+    )
+    @GetMapping("/email/{email}")
+    public ResponseEntity<UserResponseDto> getUserByEmail(@PathVariable String email) {
+        return ResponseEntity.ok(userHandler.getUserByEmail(email));
+    }
+
     @Operation(summary = "Check if a user exists by id")
     @GetMapping("/{id}/exists")
     public ResponseEntity<Boolean> userExists(@PathVariable Long id) {

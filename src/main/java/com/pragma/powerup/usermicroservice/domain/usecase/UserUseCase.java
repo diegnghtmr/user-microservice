@@ -91,6 +91,15 @@ public class UserUseCase implements IUserServicePort {
     }
 
     @Override
+    public User getUserByEmail(String email) {
+        User user = userPersistencePort.getUserByEmail(email);
+        if (user == null) {
+            throw new UserNotFoundException("User not found with email " + email);
+        }
+        return user;
+    }
+
+    @Override
     public List<User> getAllUsers() {
         return userPersistencePort.findAll();
     }

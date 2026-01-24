@@ -53,6 +53,12 @@ public class UserHandler implements IUserHandler {
     }
 
     @Override
+    public UserResponseDto getUserByEmail(String email) {
+        User user = userServicePort.getUserByEmail(email);
+        return userResponseMapper.toResponse(user);
+    }
+
+    @Override
     public List<UserResponseDto> listUsers() {
         return userResponseMapper.toResponseList(userServicePort.getAllUsers());
     }
