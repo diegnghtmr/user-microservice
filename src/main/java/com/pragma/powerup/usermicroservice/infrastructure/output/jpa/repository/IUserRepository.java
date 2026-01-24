@@ -1,6 +1,7 @@
 package com.pragma.powerup.usermicroservice.infrastructure.output.jpa.repository;
 
 import com.pragma.powerup.usermicroservice.infrastructure.output.jpa.entity.UserEntity;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
