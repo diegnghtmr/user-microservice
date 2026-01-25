@@ -1,6 +1,7 @@
 package com.pragma.powerup.usermicroservice.application.dto.response;
 
 import java.time.LocalDate;
+import java.time.Instant;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,4 +17,5 @@ public class UserResponseDto {
     private String email;
     private String role;
     private Long idRestaurant;
+    private Instant createdAt;
 }

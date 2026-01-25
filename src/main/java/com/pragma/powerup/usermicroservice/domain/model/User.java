@@ -11,11 +11,24 @@ public class User {
     private String password;
     private String role;
     private Long idRestaurant;
+    private java.time.Instant createdAt;
 
     public User() {
     }
 
-    public User(Long id, String firstName, String lastName, String email, String documentNumber, String phone, java.time.LocalDate birthDate, String password, String role, Long idRestaurant) {
+    public User(
+        Long id,
+        String firstName,
+        String lastName,
+        String email,
+        String documentNumber,
+        String phone,
+        java.time.LocalDate birthDate,
+        String password,
+        String role,
+        Long idRestaurant,
+        java.time.Instant createdAt
+    ) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -26,6 +39,7 @@ public class User {
         this.password = password;
         this.role = role;
         this.idRestaurant = idRestaurant;
+        this.createdAt = createdAt;
     }
 
     public Long getId() {
@@ -106,5 +120,13 @@ public class User {
 
     public void setIdRestaurant(Long idRestaurant) {
         this.idRestaurant = idRestaurant;
+    }
+
+    public java.time.Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(java.time.Instant createdAt) {
+        this.createdAt = createdAt;
     }
 }
