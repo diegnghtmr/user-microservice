@@ -54,7 +54,14 @@ public class JwtProviderAdapter implements ITokenProviderPort {
     }
 
     public List<String> getRoles(String token) {
-        return getClaims(token).get("roles", List.class);
+        Object rawRoles = getClaims(token).get("roles");
+        if (!(rawRoles instanceof List<?> roles)) {
+            return List.of();
+        }
+        return roles.stream()
+                .filter(role -> role instanceof String)
+                .map(role -> (String) role)
+                .toList();
     }
 
     public boolean validateToken(String token) {
