@@ -49,14 +49,11 @@ docker compose up -d user-postgres
 
 API: `http://localhost:8090/user-api`. Open [Swagger UI](http://localhost:8090/user-api/swagger-ui.html) to explore `POST /auth/login` and the routes under `/user`.
 
-| Name | Purpose | Default |
-| --- | --- | --- |
-| `SPRING_DATASOURCE_URL` | Identity database JDBC URL | `jdbc:postgresql://localhost:5431/user_db` |
-| `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD` | Database credentials | Local values in Spring config and Compose; override together for other environments |
+The local PostgreSQL port is `5431`. For other connections, see the [database settings](docs/reference.md#data-store-and-environment).
 
 ## Architecture
 
-Spring MVC and application handlers hand off to domain use cases. The domain owns `IUserPersistencePort`, `IPasswordEncoderPort`, and `ITokenProviderPort`; `UserJpaAdapter`, `BCryptPasswordEncoderAdapter`, and `JwtProviderAdapter` implement those ports. This keeps the framework, database, and token libraries out of the account rules.
+Spring MVC and application handlers hand off to domain use cases. Adapters implement database access, password hashing, and token issuance outside the account rules.
 
 ```mermaid
 flowchart LR
@@ -68,8 +65,6 @@ flowchart LR
     UseCases -->|"JPA persistence"| DB["PostgreSQL: user_db"]
     UseCases -->|"Hash passwords and issue tokens"| Security["BCrypt and JWT adapters"]
 ```
-
-See the [system diagrams in the web repository](https://github.com/diegnghtmr/food-court-ui/tree/main/docs) for the wider service and data model.
 
 ## Tech stack
 
@@ -86,6 +81,10 @@ See the [system diagrams in the web repository](https://github.com/diegnghtmr/fo
 ```
 
 [CI](.github/workflows/ci.yml) builds and tests on Temurin 25. Use `./gradlew test` for the test task, which also writes JaCoCo HTML and XML reports. The suite includes a Spring context check and domain tests for user creation.
+
+## Documentation
+
+- [Identity API reference](docs/reference.md) — account and login routes, PostgreSQL settings, ports and adapters, and system diagrams.
 
 ## Related repositories
 
