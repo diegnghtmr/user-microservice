@@ -1,85 +1,101 @@
-# User Microservice
+<!-- markdownlint-disable-next-line MD041 -->
+<div align="center">
 
-![Java](https://img.shields.io/badge/Java-25-blue)
-![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.0-brightgreen)
-![Architecture](https://img.shields.io/badge/Architecture-Hexagonal-black)
-![Database](https://img.shields.io/badge/DB-PostgreSQL-blue)
+<h1>Food Court — Identity API</h1>
 
-Identity and access service for the Food Court platform. It manages users, roles, and JWT authentication for the rest of the system.
+<p><strong>Accounts and role-based sign-in for customers, employees, owners, and administrators.</strong></p>
 
-## Table of Contents
-- [Overview](#overview)
-- [Responsibilities](#responsibilities)
-- [System Context](#system-context)
-- [Architecture](#architecture)
-- [Ports and Adapters](#ports-and-adapters)
-- [Data Store](#data-store)
-- [API](#api)
-- [Local Development](#local-development)
-- [System Diagrams](#system-diagrams)
-- [Related Repositories](#related-repositories)
+<p>
+<a href="https://github.com/diegnghtmr/user-microservice/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/diegnghtmr/user-microservice/ci.yml?branch=main&style=for-the-badge&labelColor=1F1F28&label=CI" alt="CI"></a>
+<img src="https://img.shields.io/badge/Java-25-E0C15A?style=for-the-badge&labelColor=1F1F28" alt="Java 25">
+<img src="https://img.shields.io/badge/Spring%20Boot-4.0-E0C15A?style=for-the-badge&labelColor=1F1F28" alt="Spring Boot 4.0">
+<img src="https://img.shields.io/badge/Database-PostgreSQL-E0C15A?style=for-the-badge&labelColor=1F1F28" alt="PostgreSQL">
+<a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-7FB4CA?style=for-the-badge&labelColor=1F1F28" alt="License: MIT"></a>
+</p>
 
-## Overview
-User Microservice is the source of truth for user profiles and roles. It issues JWTs and serves identity data to other services in the Food Court system.
+<p>
+<a href="https://diegnghtmr.me/en/work/food-court/"><strong>Case study</strong></a> &bull;
+<a href="#quick-start"><strong>Quick start</strong></a> &bull;
+<a href="#architecture"><strong>Architecture</strong></a> &bull;
+<a href="https://github.com/diegnghtmr/food-court-ui"><strong>Web app</strong></a>
+</p>
 
-## Responsibilities
-- Register and authenticate users.
-- Manage user roles and restaurant ownership links.
-- Provide user lookup data to other services.
+</div>
 
-## System Context
-Inbound adapters:
-- REST API (Spring MVC) under `/user-api`.
+<p align="center"><img width="100%" alt="Food Court owner dashboard with employee count and a shortcut to create an employee account" src="docs/assets/owner-overview.png"></p>
 
-Outbound adapters:
-- PostgreSQL via Spring Data JPA.
+*The Food Court owner workspace uses this API for employee accounts and restaurant staffing.*
 
-Consumers:
-- Food Court, Order, and Traceability services.
+A diner and a kitchen employee use the same app but should not get the same access. The Identity API manages their accounts, issues JWTs with the applicable role and restaurant context, and exposes the user lookup endpoints other Food Court services need.
+
+## Features
+
+- **Role-specific account creation.** Separate endpoints create clients, employees, owners, and administrators.
+- **Password hashing.** The service stores BCrypt password hashes instead of plaintext passwords.
+- **JWT sign-in.** Successful login issues a token carrying the account ID and roles and, when available, the restaurant ID.
+- **Restaurant staffing.** The API links employees to a restaurant and lists the employees assigned to it.
+- **Identity lookup.** Other services can look up a user by ID or email, check an ID’s existence, or list owner records.
+
+## Quick start
+
+Install JDK 25 and Docker with Compose. Start the PostgreSQL container and run the service on the host with the checked-in Gradle wrapper.
+
+```sh
+git clone https://github.com/diegnghtmr/user-microservice.git
+cd user-microservice
+docker compose up -d user-postgres
+./gradlew bootRun
+```
+
+API: `http://localhost:8090/user-api`. Open [Swagger UI](http://localhost:8090/user-api/swagger-ui.html) to explore `POST /auth/login` and the routes under `/user`.
+
+| Name | Purpose | Default |
+| --- | --- | --- |
+| `SPRING_DATASOURCE_URL` | Identity database JDBC URL | `jdbc:postgresql://localhost:5431/user_db` |
+| `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD` | Database credentials | Local values in Spring config and Compose; override together for other environments |
 
 ## Architecture
-Hexagonal Architecture keeps business rules independent from frameworks.
 
-- Domain: models, use cases, and port interfaces.
-- Application: DTOs, mappers, and handlers that orchestrate use cases.
-- Infrastructure: REST controllers, JPA adapters, security, and configuration.
+Spring MVC and application handlers hand off to domain use cases. The domain owns `IUserPersistencePort`, `IPasswordEncoderPort`, and `ITokenProviderPort`; `UserJpaAdapter`, `BCryptPasswordEncoderAdapter`, and `JwtProviderAdapter` implement those ports. This keeps the framework, database, and token libraries out of the account rules.
 
-Dependency rule: infrastructure depends on application and domain; domain has no framework dependencies.
+```mermaid
+flowchart LR
+    Web["food-court-ui"] -->|"Register or sign in"| API["Identity REST API"]
+    Orders["order-microservice"] -->|"User lookups"| API
+    Trace["traceability-microservice"] -->|"Employee names"| API
+    Catalog["food-court-microservice"] -->|"Attempts owner lookup"| API
+    API --> UseCases["Account and authentication use cases"]
+    UseCases -->|"JPA persistence"| DB["PostgreSQL: user_db"]
+    UseCases -->|"Hash passwords and issue tokens"| Security["BCrypt and JWT adapters"]
+```
 
-## Ports and Adapters
-- `IUserPersistencePort` -> `UserJpaAdapter`.
-- `IPasswordEncoderPort` -> `BCryptPasswordEncoderAdapter`.
-- `ITokenProviderPort` -> `JwtProviderAdapter`.
+See the [system diagrams in the web repository](https://github.com/diegnghtmr/food-court-ui/tree/main/docs) for the wider service and data model.
 
-## Data Store
-- PostgreSQL: `jdbc:postgresql://localhost:5431/user_db`
+## Tech stack
 
-## API
-- Base URL: `http://localhost:8090/user-api`
-- Swagger UI: `http://localhost:8090/user-api/swagger-ui.html`
+| Layer | Technology |
+| --- | --- |
+| HTTP and security | Java 25, Spring Boot 4.0, Spring MVC, Spring Security, BCrypt, JJWT |
+| Data and API docs | Spring Data JPA, PostgreSQL, MapStruct, springdoc OpenAPI |
+| Build and tests | Gradle 9.2.1, JUnit Platform, H2, JaCoCo |
 
-## Local Development
-1. Start database: `docker compose up -d`
-2. Run service: `./gradlew bootRun`
-3. Run tests: `./gradlew test`
+## Testing
 
-## System Diagrams
-![Project Architecture](https://raw.githubusercontent.com/diegnghtmr/food-court-ui/main/docs/project-architecture.png)
-_High-level system context showing actors, UI, services, and databases._
-![SQL Entities Diagram](https://raw.githubusercontent.com/diegnghtmr/food-court-ui/main/docs/sql-entities-diagram.png)
-_Relational model for users, restaurants, dishes, and orders in PostgreSQL._
-![NoSQL Entities Diagram](https://raw.githubusercontent.com/diegnghtmr/food-court-ui/main/docs/nosql-entities-diagram.png)
-_Document model for traceability events and order history in MongoDB._
-![Order Flow Diagram](https://raw.githubusercontent.com/diegnghtmr/food-court-ui/main/docs/order-flow-diagram.png)
-_Order lifecycle from pending to delivered or canceled, including state transitions._
+```sh
+./gradlew build
+```
 
-## Related Repositories
-- [user-microservice](https://github.com/diegnghtmr/user-microservice)
-- [food-court-microservice](https://github.com/diegnghtmr/food-court-microservice)
-- [order-microservice](https://github.com/diegnghtmr/order-microservice)
-- [traceability-microservice](https://github.com/diegnghtmr/traceability-microservice)
-- [food-court-ui](https://github.com/diegnghtmr/food-court-ui)
+[CI](.github/workflows/ci.yml) builds and tests on Temurin 25. Use `./gradlew test` for the test task, which also writes JaCoCo HTML and XML reports. The suite includes a Spring context check and domain tests for user creation.
+
+## Related repositories
+
+| Repository | Role |
+| --- | --- |
+| [food-court-ui](https://github.com/diegnghtmr/food-court-ui) | Role-aware sign-in and account management screens |
+| [food-court-microservice](https://github.com/diegnghtmr/food-court-microservice) | Restaurant and dish catalog, with a client for owner lookup |
+| [order-microservice](https://github.com/diegnghtmr/order-microservice) | Uses customer lookups during the order lifecycle |
+| [traceability-microservice](https://github.com/diegnghtmr/traceability-microservice) | Resolves employee names for fulfillment reports |
 
 ## License
 
-MIT, see [LICENSE](LICENSE).
+Released under the [MIT License](LICENSE).
